@@ -1,6 +1,6 @@
 # checkoutvueworkshopphp
 
-> Projeto para o Workshop no Php Expirence
+>
 
 ## Build Setup
 
