@@ -196,11 +196,9 @@ export default {
             }
 
             this.$http.post('ecommerce/api/sale', params).then((response) => {
-                console.log("Deu bom", response.body);
-                this.$dialog(response.body);
+                this.$dialog("Compra realizada com sucesso");
             }).catch((ex) => {
-                console.log("Deu ruim", ex);
-                this.$dialog(response.body);
+                this.$dialog("Ocorreu um erro ao realizar a operacao");
             });
         }
     },
