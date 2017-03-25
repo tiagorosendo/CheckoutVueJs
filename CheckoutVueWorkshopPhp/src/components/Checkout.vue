@@ -195,7 +195,7 @@ export default {
                 "Payment": this.Payment
             }
 
-            this.$http.post('/ecommerce/api/sale', params).then((response) => {
+            this.$http.post('http://ecommerce/api/sale', params).then((response) => {
                 this.$dialog("Compra realizada com sucesso");
             }).catch((ex) => {
                 this.$dialog("Ocorreu um erro ao realizar a operacao");
