@@ -88,7 +88,7 @@
     <v-card>
         <div class="card-content">
             <div class="row">
-                <img src="http://www.safetypay.com/en/wp-content/uploads/2016/06/partners-braspag.png" />
+                <img style="width: 140px;" class="responsive-img" src="https://logodownload.org/wp-content/uploads/2014/07/Cielo-logo-logotipo.png" />
             </div>
             <div>
                 <h5>{{ msg }}</h5>
@@ -100,7 +100,7 @@
             <span class="card-title">Carrinho de Compras</span>
 
             <div class="row" style=" padding-top: 40px;">
-                <div class="col l6 offset-l3 center">
+                <div class="col l6 center">
                     <div class="row">
                         <div class="col l12" v-for="item in produtos">
                             <div class="col l6">
@@ -115,13 +115,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="divider"></div>
-
-        <div class="card-content">
-            <div class="row">
-                <form class="col l6 offset-l3 center">
+                <form class="col l6 center">
                     <div class="row">
                         <div class="input-field col s12">
                             <input id="name" type="text" v-model="Payment.CreditCard.Holder" placeholder>
@@ -148,6 +142,7 @@
                 </form>
             </div>
         </div>
+
     </v-card>
 </div>
 
@@ -165,12 +160,13 @@ export default {
                 "Amount": 100,
                 "Installments": 1,
                 "SoftDescriptor": "123456789ABCD",
+                "Provider": "Simulado",
                 CreditCard: {
                     CardNumber: "5274976545670001",
                     Holder: "",
                     ExpirationDate: "11/2021",
                     SecurityCode: "",
-                    Brande: "Visa"
+                    Brand: "Visa"
                 }
             },
             produtos: [{
@@ -190,17 +186,32 @@ export default {
     },
     methods: {
         efetuarCompra() {
-            let params = {
-                "MerchantOrderId": "2014111703",
-                "Payment": this.Payment
-            }
+                let params = {
+                    "MerchantOrderId": "2014111703",
+                    "Payment": this.Payment
+                }
 
-            this.$http.post('http://ecommerce/api/sale', params).then((response) => {
-                this.$dialog("Compra realizada com sucesso");
-            }).catch((ex) => {
-                this.$dialog("Compra realizada com sucesso");
-            });
-        }
+                this.$http.post('http://localhost:4000/api/sales', params).then((response) => {
+                    console.log(response.body);
+                    if (response.body.Payment.VelocityAnalysis.Score != 0)
+                        this.falaComigo("Transação bloqueada pelo Vêlóciti Chéqui");
+                    this.$dialog(response.body.Payment.ReturnMessage);
+                }).catch((ex) => {
+                    console.log(ex);
+                    this.$dialog("Erro ao executar a operacao");
+                });
+            },
+            falaComigo(text) {
+                VoiceRSS.speech({
+                    key: '6cd833c0b60647a386401df5906e5a24',
+                    src: text,
+                    hl: 'pt-br',
+                    r: 0,
+                    c: 'mp3',
+                    f: '48khz_16bit_stereo',
+                    ssml: false
+                });
+            }
     },
     computed: {
         subTotal() {
