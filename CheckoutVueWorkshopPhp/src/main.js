@@ -5,7 +5,9 @@ import App from './App'
 import VueResource from 'vue-resource';
 import router from './router'
 import Materials from 'vue-materials'
+import VueSweetAlert from 'vue-sweetalert'
 
+Vue.use(VueSweetAlert)
 Vue.use(Materials);
 Vue.use(VueResource);
 

@@ -193,24 +193,34 @@ export default {
 
                 this.$http.post('http://localhost:4000/api/sales', params).then((response) => {
                     console.log(response.body);
-                    if (response.body.Payment.VelocityAnalysis.Score != 0)
-                        this.falaComigo("Transação bloqueada pelo Vêlóciti Chéqui");
-                    this.$dialog(response.body.Payment.ReturnMessage);
+                    if (response.body.Payment.VelocityAnalysis.Score != 0) {
+                        this.falaComigo("Transação bloqueada pelo Velocity");
+                        setTimeout(() => {
+                            this.$swal('PHP Experience 2017', 'Transação bloqueada pelo Velocity', 'error')
+                        }, 500);
+                    } else
+                        this.showMessageBox(response.body.Payment.ReturnCode);
+
                 }).catch((ex) => {
                     console.log(ex);
-                    this.$dialog("Erro ao executar a operacao");
+                    this.$swal('PHP Experience 2017', 'Erro ao executar a operacao', 'error')
                 });
             },
             falaComigo(text) {
-                VoiceRSS.speech({
-                    key: '6cd833c0b60647a386401df5906e5a24',
-                    src: text,
-                    hl: 'pt-br',
-                    r: 0,
-                    c: 'mp3',
-                    f: '48khz_16bit_stereo',
-                    ssml: false
-                });
+                responsiveVoice.speak(text, "Brazilian Portuguese Female");
+            },
+            showMessageBox(statusCode) {
+                switch (statusCode) {
+                    case "02":
+                    case "4":
+                        this.falaComigo("Transação autorizada");
+                        this.$swal('PHP Experience 2017', 'Transação autorizada', 'success')
+                        break;
+                    case "05":
+                        this.falaComigo("Transação não autorizada");
+                        this.$swal('PHP Experience 2017', 'Transação não autorizada', 'error')
+                        break;
+                }
             }
     },
     computed: {

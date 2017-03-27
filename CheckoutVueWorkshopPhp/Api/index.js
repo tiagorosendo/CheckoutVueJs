@@ -6,15 +6,16 @@ router.post('/sales', function(req, res) {
 
   let config = {
     headers: {
-      "MerchantId": 'B39CABDB-6CE1-4A1E-AD2A-A62E825ABD51',
-      "MerchantKey": 'CZ16Gawgyw5QmNRVmtxlPecLvRzNIHOiwkdUsT7N'
+      "MerchantId": 'A0BE879C-D2C1-486B-BA0A-04B6D4D7028E',
+      "MerchantKey": 'LJGZZMVQUZHCMNSVYDEEHMDDJXEXOFNSYPTJUZRS'
     }
   };
 
-  axios.post('https://apihomolog.cieloecommerce.cielo.com.br/1/sales', req.body, config).then((response) => {
+  axios.post('https://apisandbox.cieloecommerce.cielo.com.br/1/sales', req.body, config).then((response) => {
     res.status(201);
     res.json(response.data);
   }).catch((response) => {
+    console.log(response);
     res.status(500).send(response.data);
   });
 });
