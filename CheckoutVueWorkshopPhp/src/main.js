@@ -12,7 +12,8 @@ Vue.use(Materials);
 Vue.use(VueResource);
 
 Vue.config.productionTip = false
-Vue.http.options.xhr = { withCredentials: true }
+Vue.http.headers.common['Access-Control-Allow-Origin'] = '*';
+Vue.http.headers.common['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, Authorization, Access-Control-Allow-Origin'
 
 /* eslint-disable no-new */
 new Vue({

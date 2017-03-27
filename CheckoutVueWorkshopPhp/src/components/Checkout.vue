@@ -195,9 +195,7 @@ export default {
                     console.log(response.body);
                     if (response.body.Payment.VelocityAnalysis.Score != 0) {
                         this.falaComigo("Transação bloqueada pelo Velocity");
-                        setTimeout(() => {
-                            this.$swal('PHP Experience 2017', 'Transação bloqueada pelo Velocity', 'error')
-                        }, 500);
+                        this.$swal('PHP Experience 2017', 'Transação bloqueada pelo Velocity', 'error')
                     } else
                         this.showMessageBox(response.body.Payment.ReturnCode);
 
