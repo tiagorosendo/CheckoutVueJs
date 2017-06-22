@@ -154,7 +154,7 @@ export default {
     name: 'Checkout',
     data() {
         return {
-            msg: 'PHP Experience | 2017',
+            msg: 'JS Experience | 2017',
             Payment: {
                 "Type": "CreditCard",
                 "Amount": 100,
@@ -195,13 +195,13 @@ export default {
                     console.log(response.body);
                     if (response.body.Payment.VelocityAnalysis.Score != 0) {
                         this.falaComigo("Transação bloqueada pelo Velocity");
-                        this.$swal('PHP Experience 2017', 'Transação bloqueada pelo Velocity', 'error')
+                        this.$swal('JS Experience 2017', 'Transação bloqueada pelo Velocity', 'error')
                     } else
                         this.showMessageBox(response.body.Payment.ReturnCode);
 
                 }).catch((ex) => {
                     console.log(ex);
-                    this.$swal('PHP Experience 2017', 'Erro ao executar a operacao', 'error')
+                    this.$swal('JS Experience 2017', 'Erro ao executar a operacao', 'error')
                 });
             },
             falaComigo(text) {
@@ -212,11 +212,11 @@ export default {
                     case "02":
                     case "4":
                         this.falaComigo("Transação autorizada");
-                        this.$swal('PHP Experience 2017', 'Transação autorizada', 'success')
+                        this.$swal('JS Experience 2017', 'Transação autorizada', 'success')
                         break;
                     case "05":
                         this.falaComigo("Transação não autorizada");
-                        this.$swal('PHP Experience 2017', 'Transação não autorizada', 'error')
+                        this.$swal('JS Experience 2017', 'Transação não autorizada', 'error')
                         break;
                 }
             }

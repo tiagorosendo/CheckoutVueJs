@@ -11,6 +11,7 @@
   "dependencies": {
     "card": "^2.2.1",
     "jquery": "^3.2.1",
+    "querystring": "^0.2.0",
     "vue": "^2.2.2",
     "vue-materials": "^1.0.7-rc.7",
     "vue-resource": "^1.2.1",

@@ -11,6 +11,7 @@ var express = require('express')
 var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
+var axios = require('axios');
 
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -35,6 +36,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/api', apiRoutes);
 
+app.get('/', (req, res,next) => {
+
+    axios.get('http://localhost:4000/api/token').then((response)=>{
+    res.cookie('accessTokenCielo', response.data.access_token, { maxAge: 900000, httpOnly: false })
+    next()
+    }).catch((e)=>{
+      res.status(500).end('500 | Internal Server Error')
+    });
+
+})
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
