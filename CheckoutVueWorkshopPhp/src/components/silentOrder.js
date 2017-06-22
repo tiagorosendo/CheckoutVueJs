@@ -90,7 +90,7 @@ class SilentOrder {
 			}
 		}
 		
-		return axios.post("https://apisandbox.cieloecommerce.cielo.com.br/1/sales", params, {
+		return axios.post("https://apidev.cieloecommerce.cielo.com.br/1/sales", params, {
 			headers: {
 				Authorization: "Bearer " + this.getAccessToken(),
 				"Access-Control-Allow-Origin": "*"

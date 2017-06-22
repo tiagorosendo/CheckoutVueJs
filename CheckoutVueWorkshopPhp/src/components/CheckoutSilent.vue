@@ -173,18 +173,6 @@
                     console.log(ex);
                     this.$swal('JS Experience 2017', 'Erro ao executar a operacao', 'error')
                 });
-
-                // this.$http.post('http://localhost:4000/api/sales', params).then((response) => {
-                //     console.log(response.body);
-                //     if (response.body.Payment.VelocityAnalysis.Score != 0) {
-                //         this.falaComigo("Transação bloqueada pelo Velocity");
-                //         this.$swal('JS Experience 2017', 'Transação bloqueada pelo Velocity', 'error')
-                //     } else
-                //         this.showMessageBox(response.body.Payment.ReturnCode);
-                // }).catch((ex) => {
-                //     console.log(ex);
-                //     this.$swal('JS Experience 2017', 'Erro ao executar a operacao', 'error')
-                // });
             },
             falaComigo(text) {
                 responsiveVoice.speak(text, "Brazilian Portuguese Female");
