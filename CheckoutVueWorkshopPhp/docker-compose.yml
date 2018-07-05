@@ -1,6 +1,0 @@
-web:
-  build: .
-  volumes:
-    - ".:/src/app"
-  ports:
-    - "3030:4000"
