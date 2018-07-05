@@ -135,7 +135,7 @@
         name: 'Checkout',
         data() {
             return {
-                msg: 'JS Experience | 2017',
+                msg: 'JS Experience | 2018',
                 useCardToken: false,
                 Payment: {
                     "Type": "CreditCard",
@@ -171,33 +171,38 @@
             efetuarCompra() {
                 let params = {
                     "MerchantOrderId": "2014111703",
+                    "Customer": {
+                        "Name": this.Payment.CreditCard.Holder
+                    },
                     "Payment": this.Payment
                 }
                 this.$http.post('http://localhost:4000/api/sales', params).then((response) => {
                     console.log(response.body);
                     if (response.body.Payment.VelocityAnalysis.Score != 0) {
                         this.falaComigo("Transação bloqueada pelo Velocity");
-                        this.$swal('JS Experience 2017', 'Transação bloqueada pelo Velocity', 'error')
+                        this.$swal('JS Experience 2018', 'Transação bloqueada pelo Velocity', 'error')
                     } else
-                        this.showMessageBox(response.body.Payment.ReturnCode);
+                        this.showMessageBox(response.body.Payment);
                 }).catch((ex) => {
                     console.log(ex);
-                    this.$swal('JS Experience 2017', 'Erro ao executar a operacao', 'error')
+                    this.$swal('JS Experience 2018', 'Erro ao executar a operacao', 'error')
                 });
             },
             falaComigo(text) {
                 responsiveVoice.speak(text, "Brazilian Portuguese Female");
             },
-            showMessageBox(statusCode) {
-                switch (statusCode) {
+            showMessageBox(payment) {
+                switch (payment.ReturnCode) {
                     case "02":
                     case "4":
                         this.falaComigo("Transação autorizada");
-                        this.$swal('JS Experience 2017', 'Transação autorizada', 'success')
+                        this.$swal('JS Experience 2018', 
+                        `Transação autorizada, PaymentId ${payment.PaymentId}, CardToken ${payment.CreditCard.CardToken}`,
+                        'success')
                         break;
                     case "05":
                         this.falaComigo("Transação não autorizada");
-                        this.$swal('JS Experience 2017', 'Transação não autorizada', 'error')
+                        this.$swal('JS Experience 2018', 'Transação não autorizada', 'error')
                         break;
                 }
             }

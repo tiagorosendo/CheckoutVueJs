@@ -7,8 +7,8 @@ router.post('/sales', function (req, res) {
 
   let config = {
     headers: {
-      "MerchantId": 'A0BE879C-D2C1-486B-BA0A-04B6D4D7028E',
-      "MerchantKey": 'LJGZZMVQUZHCMNSVYDEEHMDDJXEXOFNSYPTJUZRS'
+      "MerchantId": '2B8E9C38-0D9E-4F30-ADAC-FEF3601632E4',
+      "MerchantKey": 'RDCFJFYAUHSWCKOPXTARDYCDGHAZDAGCWYOAZMXD'
     }
   };
 

@@ -71,12 +71,13 @@
                 <div class="row" style=" padding-top: 40px;">
                     <div class="col l6 center">
                         <div class="row">
-                            <div class="col l12" v-for="item in produtos">
+                            <div class="col l12" v-for="(item, index) in produtos" :key="index">
                                 <div class="col l6">
                                     <img style="height: 100px;" class="circle responsive-img" :src="item.imgUrl">
                                 </div>
                                 <div class="col l6">
                                     <h6>{{item.nome}} R$ {{item.valor}}</h6>
+                                    <h6>Vendido por: {{item.vendedor}}</h6>
                                 </div>
                             </div>
                             <div class="col l12 right-align">
@@ -84,7 +85,13 @@
                             </div>
                         </div>
                     </div>
-                    <form class="col l6 center">
+                    <div class="col l6 center">
+                        <p>
+                            <input type="checkbox" id="test5" v-model="useCardToken" />
+                            <label for="test5">Usar Token de Cartao</label>
+                        </p>
+                    </div>
+                    <form class="col l6 center" v-if="useCardToken == false">
                         <div class="row">
                             <div class="input-field col s12">
                                 <input id="name" type="text" v-model="Payment.CreditCard.Holder" placeholder>
@@ -107,8 +114,16 @@
                                 <label for="CVV">CVV</label>
                             </div>
                         </div>
-                        <v-btn @click.native="efetuarCompra" class="waves-effect waves-light blue">Efetuar Pagamento <i class="material-icons">credit_card</i></v-btn>
                     </form>
+                    <form class="col l6 center" v-else>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="cardToken" type="text" v-model="Payment.CreditCard.CardToken" placeholder>
+                                <label for="cardToken">Token do Cartao</label>
+                            </div>
+                        </div>
+                    </form>
+                        <v-btn @click.native="efetuarCompra" class="waves-effect waves-light blue">Efetuar Pagamento <i class="material-icons">credit_card</i></v-btn>
                 </div>
             </div>
         </v-card>
@@ -116,59 +131,70 @@
 </template>
 
 <script>
-    import SilentOrder from './silentOrder.js'
     export default {
         name: 'Checkout',
         data() {
             return {
-                msg: 'JS Experience | 2018 - Silent Order ',
+                msg: 'JS Experience | 2018',
+                useCardToken: false,
                 Payment: {
-                    "Type": "CreditCard",
-                    "Amount": 100,
+                    "Type": "SplittedCreditCard",
+                    "Amount": 16557,
                     "Installments": 1,
                     "SoftDescriptor": "123456789ABCD",
                     "Provider": "Simulado",
-                    CreditCard: {
-                        CardNumber: "5274976545670001",
-                        Holder: "",
-                        ExpirationDate: "11/2021",
-                        SecurityCode: " ",
-                        Brand: "Visa"
-                    }
+                    "Capture": true,
+                    "CreditCard": {
+                        "CardNumber": "5274976545670001",
+                        "Holder": "",
+                        "ExpirationDate": "11/2021",
+                        "SecurityCode": " ",
+                        "Brand": "Visa",
+                        "SaveCard": true
+                    },
+                    "SplitPayments": [{
+                        "SubordinateMerchantId": "fdae3204-3999-4082-aa32-f08b6f3a01f3",
+                        "Amount": 11788
+                    },
+                    {
+                        "SubordinateMerchantId": "44f68284-27cf-43cb-9d14-1b1ee3f36838",
+                        "Amount": 4769
+                    }]
                 },
                 produtos: [{
                     nome: "Mouse Gamer",
                     valor: 190.9,
+                    vendedor: "Games da Esquina",
                     imgUrl: "https://assets.razerzone.com/eeimages/products/293/razer-taipan-gallery-2-black.png"
                 }, {
                     nome: "Teclado Gamer",
                     valor: 987.9,
+                    vendedor: "Games da Esquina",
                     imgUrl: "https://images-americanas.b2w.io/produtos/01/00/item/121245/6/121245637_1GG.png"
                 }, {
                     nome: "Fone Gamer",
                     valor: 476.9,
+                    vendedor: "Loja do Zé",
                     imgUrl: "https://assets.razerzone.com/eeimages/products/5890/razer-blackshark-gallery-7.png"
                 }]
             }
         },
         methods: {
             efetuarCompra() {
-                var silentOrder = new SilentOrder();
-                silentOrder.setCreditCardSelector("cn")
-                    .setCvvSelector("#CVV")
-                    .setCardBrandSelector("Brand")
-                    .setExpirationDateSelector("#date")
-                    .setCardHolderSelector("#name")
-                    .sendTransaction({
-                        amount: this.Payment.Amount,
-                        MerchantOrderId: "123123123"
-                    }).then((response) => {
+                let params = {
+                    "MerchantOrderId": "2014111703",
+                    "Customer": {
+                        "Name": this.Payment.CreditCard.Holder
+                    },
+                    "Payment": this.Payment
+                }
+                this.$http.post('http://localhost:4000/api/sales', params).then((response) => {
                     console.log(response.body);
                     if (response.body.Payment.VelocityAnalysis.Score != 0) {
                         this.falaComigo("Transação bloqueada pelo Velocity");
                         this.$swal('JS Experience 2018', 'Transação bloqueada pelo Velocity', 'error')
                     } else
-                        this.showMessageBox(response.body.Payment.ReturnCode);
+                        this.showMessageBox(response.body.Payment);
                 }).catch((ex) => {
                     console.log(ex);
                     this.$swal('JS Experience 2018', 'Erro ao executar a operacao', 'error')
@@ -177,12 +203,15 @@
             falaComigo(text) {
                 responsiveVoice.speak(text, "Brazilian Portuguese Female");
             },
-            showMessageBox(statusCode) {
-                switch (statusCode) {
+            showMessageBox(payment) {
+                switch (payment.ReturnCode) {
                     case "02":
+                    case "6":
                     case "4":
                         this.falaComigo("Transação autorizada");
-                        this.$swal('JS Experience 2018', 'Transação autorizada', 'success')
+                        this.$swal('JS Experience 2018', 
+                        `Transação autorizada, PaymentId ${payment.PaymentId}, CardToken ${payment.CreditCard.CardToken}`,
+                        'success')
                         break;
                     case "05":
                         this.falaComigo("Transação não autorizada");
